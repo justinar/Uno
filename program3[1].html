@@ -1,0 +1,442 @@
+<HTML>
+<style type="text/css">
+.input { color:red; }
+</style>
+<link rel="stylesheet" type="text/css" href="assignments.css" />
+<HEAD>
+<TITLE>CPSC 220 - Programming assignment #3</TITLE>
+</HEAD>
+<BODY>
+
+<p align="center">CPSC 220 - Programming &amp; Problem-solving - Fall 2016</p>
+<h3 align="center">Programming assignment #3</h3>
+<p align="center"><b>Possible experience: <span class="pts">+50XP</span> (or
+even <span class="pts">+60XP</span>)</b></p>
+<p align="center"><b>Due: Monday, Oct. 10th, midnight</b></p>
+
+<h1>Uno!</h1>
+
+<p>Your assignment is to implement a sensible, strategic gaming algorithm that
+can compete in live game play against your fellow students and (ideally)
+slaughter them.</p>
+
+<p>(Note that in this assignment, you will not be turning in a "main()"
+method. Indeed, the ultimate purpose of this assignment is not to create a
+main() method. Your purpose is rather to create two other methods that
+<i>my</i> main() method will call as it simulates an Uno game.)</p>
+
+<h2>The game</h2>
+
+<p>If you're one of the seventeen people in the U.S. who has never played
+Uno, you should read <a
+href="http://en.wikipedia.org/wiki/Uno_%28card_game%29">the Wikipedia
+article</a> to get informed. Briefly, Uno is a popular card game in which
+each player holds a hand of cards, and tries to be the first one to "go
+out," or play all of their cards. Players are seated in a ring, and in the
+middle of this ring is an "up card," or a card placed on the table face up.
+Players take turns in sequence, clockwise around the ring. When it is your
+turn, you have the opportunity to play one of your cards on this up card
+(which will then become the new up card) and thus reduce the size of your
+hand. The card you play, however, must be playable on the up card,
+according to the following rules:</p>
+<ol>
+<li>Most cards have a color -- red, green, blue, or yellow -- and you may
+play a card if it has the same color as the up card.</li>
+<li>The colored cards each have a rank -- either a number from 0-9, or else
+a special "skip," "reverse," or "draw 2" rank. You may play a card if it
+has the same rank as the up card, even if it is of a different color.</li>
+<li>There are two kinds of "wild" cards: ordinary wilds, and "draw 4"
+wilds. Either kind can be played on <i>any</i> up card. When you do so, you
+"call" a new color, specifying what color the next player must play.</li>
+</ol>
+<p>Some special cards have an effect after being played, namely:</p>
+<ul>
+<li>If a "skip" card is played, the next player in sequence is skipped.</li>
+<li>If a "draw two" card is played, the next player in sequence must draw
+two cards from the deck, and is then skipped.</li>
+<li>If a "wild draw four" card is played, the next player in sequence must
+draw four cards from the deck, and is then skipped. (The player who played
+the "wild draw four" must then call a color as with a normal wild.)</li>
+<li>If a "reverse" card is played, the sequence of players is reversed to
+counterclockwise (or back to clockwise, after an even number of
+reverses.)</li>
+</ul>
+<p>The object of the game is to run out of cards. When this happens, the
+player going out is awarded points based on <b>the cards remaining in the
+opponents' hands.</b> These points are calculated as follows:</p>
+<ol>
+<li>For every numbered card held by an opponent, the winner of the round
+gets points equal to that number. (5 points for a 5, no points for a 0,
+etc.)</li>
+<li>For every "special" colored card (draw two, reverse, and skip), the
+winner of the round gets 20 points.</li>
+<li>For every "wild" card (either normal, or draw four), the winner of the
+round gets 50 points.</li>
+</ol>
+<p>Normally, players continue playing hand after hand until one player
+reaches 500 points, and is declared the overall winner of the game.</p>
+
+<h2>Your project</h2>
+
+<p>I have written an Uno simulation game. It simulates shuffling a deck,
+dealing hands to players, drawing an initial up card, enforcing all of the
+rules above, declaring a winner, and calculating scores. The only thing it
+does not do is actually choose a card to play from a hand (or call a color
+if a wild is played.)</p>
+
+<p>Every student in the class will be writing their own code to do those
+two things: play a card from a hand, and call a color in case a wild was
+played. My program will run the game, and then at the appropriate points,
+call your method(s) to do those two things. In this way, your program will
+be able to "play" Uno against your classmates in a tournament. Whoever has
+the best algorithm for playing a card should win.</p>
+
+<p>You may object to that last statement, claiming that luck is a major
+factor. This would be true except for one thing: I am not going to pit your
+Uno program against your fellow students' programs in just one game, but in
+<i>50,000 straight games</i>. This will admittedly take a few seconds. But
+over that many games, any "lucky deals" that any one player might get will
+even out over time, leaving a superior algorithm with the lead.</p>
+
+
+<h2>Getting started</h2>
+
+<p>Do the following to get your project set up in Netbeans:</p>
+<ol>
+<li>Create a new project. Call it "Uno." (Please do not call it anything
+else. Please call it "Uno," capitalized.)</li>
+<li>Right-click on the "uno" (lower-case) package that Netbeans created
+inside your Uno (capitalized) project, and choose "New &gt; Java Class."</li>
+<li>Name the new class "Card."</li>
+<li>Open up the Card.java file you just created. Delete its entire
+contents, and replace it with the contents of <a href="Card.java.txt">
+this file</a>. (You <b>do not</b> need to understand anything in this file, or
+even read it.)</li>
+<li>Right-click on the "uno" (lower-case) package that Netbeans created
+inside your Uno (capitalized) project, and choose "New &gt; Java Class."</li>
+<li>Name this second new class "GameState."</li>
+<li>Open up the GameState.java file you just created. Delete its entire
+contents, and replace it with the contents of <a href="GameState.java.txt">
+this file</a>. (Ditto. Don't need to read or understand.)</li>
+<li>Right-click on the "uno" (lower-case) package that Netbeans created
+inside your Uno (capitalized) project, and choose "New &gt; Java Class."</li>
+<li>Name this third new class "UnoPlayer."</li>
+<li>Open up the UnoPlayer.java file you just created. Delete its entire
+contents, and replace it with the contents of <a href="UnoPlayer.java.txt">
+this file</a>. (Ditto. Don't need to read or understand.)</li>
+<li>Right-click on the "uno" (lower-case) package that Netbeans created
+inside your Uno (capitalized) project, and choose "New &gt; Java Class."</li>
+<li>Name this fourth (and final) new class "jsmith_UnoPlayer," where "jsmith" is your UMW
+userid. Please do not name the class <i>literally</i> "jsmith_UnoPlayer".
+Rather, name it (for example) "rjones2_UnoPlayer," if rjones2 is your
+userid. Please do not name the class anything else. Please do not get
+clever, or creative, or capitalize differently, or use a hyphen instead of
+an underscore, or deviate from this naming convention in any way. </li>
+<li>Open up the rjones2_UnoPlayer.java (or whatever) file you just created.
+Delete its entire contents, and replace it with the contents of <a
+href="jsmith_UnoPlayer.java.txt">this file</a>. Note that when you do this,
+you will immediately have an error, which will be remedied by step 14,
+below.</li>
+<li>In your newly pasted-in copy of this class, change the word "jsmith" to
+your userid in the "public class" line.</li>
+<li>Finally, open up the Uno class that was created by NetBeans by
+default. You may delete its entire contents, and paste in this <a
+href=Uno.java.txt>simple example of a small test case</a>. This represents
+one of many scenarios (hands of cards plus chosen "up card") that your code
+will need to address properly and strategically. As before, replace
+"jsmith" with your actual UMW userid.</li>
+<li>Press the "hammer" icon in the toolbar and make sure you have no more red
+light bulbs or red X's or red anything else's.</li>
+</ol>
+<p>You are now ready to begin your mission of implementing the play() and
+callColor() methods.</p>
+
+
+<h2>The UnoPlayer.java file</h2>
+
+<p>The UnoPlayer.java file you have just copied contains what is called a "Java
+interface." This is an advanced topic that you will learn all about in CPSC
+240; lucky for you, you don't need to understand anything about it right
+now except what I'm telling you on this page. What <i>is</i> important
+about this file is the two lines that begin with "public enum."</p>
+
+<p>I have created these two "enumerated types" to represent the colors and
+the ranks of the cards in the program. Essentially, what I have done here
+is add to the basic list of Java data types (int, double, etc.) Now, in
+addition to having a variable of type "int" or type "double," you can have
+a variable of type "Color" or "Rank."</p>
+
+<p>The way you specify a value of one of these types is to prefix one of
+the capitalized words with "Color." or "Rank." For instance, here is some
+legal code:</p>
+
+<pre>
+    int x = 5;
+    double y = 3.14;
+    Color myFavoriteColor = Color.BLUE;
+    Rank aPowerfulRank = Rank.WILD_D4;
+</pre>
+
+<p>There's really nothing more to it than that. Just be aware that the way
+you say "green" in the program is "Color.GREEN", and you'll be fine.</p>
+
+
+<h2>Uno player: methods</h2>
+
+<p>Your rjones2_UnoPlayer.java file has detailed comments describing the
+<b>play()</b> and <b>callColor()</b> methods you are to write code for.
+<b><i>Reading</i> these detailed comments is an excellent and praiseworthy
+idea.</b>
+Note that the play()
+method takes four parameters. Here is its method signature:</p>
+
+<pre>
+    public int play(ArrayList&lt;Card&gt; hand, Card upCard, Color calledColor,
+        GameState state);
+</pre>
+
+<p>Collectively, these arguments tell your method (1) what cards are in
+your hand, (2) what card is the "up card," (3) what color was called
+(this argument only has relevance if the "up card" is a wild), and (4) a
+way to find out other miscellaneous things about the state of the game, for
+your use in building a sophisticated strategy.</p>
+
+<p>Your job is to write code that returns the integer of the card you wish
+to play. In the event that you cannot play any card, you should return -1
+from this method. (Note that returning a -1 for a hand in which you
+<i>can</i> legally play is an <u>error</u>.)</p>
+
+<p>If you wish, you may call methods on the GameState object passed to
+access detailed information about the state of the game. This object
+supports the following methods:</p>
+
+<ul>
+<li><span style="font-family:monospace;">int[]
+getNumCardsInHandsOfUpcomingPlayers()</span> - the array returned by this
+method will have length equal to
+the number of players minus 1 (in a normal tournament game, this will be
+3.) It tells you <i>in order</i> how many cards
+the next player to play after you has (at index 0), how many the player
+across from you has (at index 1), and how many the player who just played
+has (at index 2.) Note that when I say "the next player to play after you,"
+that presumes, of course, that you do not play a skip or a reverse, in
+which case the player represented at index 1 or index 2, respectively, will
+be the next player.</li>
+
+<li><span style="font-family:monospace;">int[]
+getMostRecentColorCalledByUpcomingPlayers()</span> - this array follows the same
+format as the previous, except it contains Colors, not ints. It tells you
+the most recent color each player called when they played a wild. (The
+value will be "Color.NONE" if that player has not yet played a wild card
+this round.)</li>
+
+<li><span style="font-family:monospace;">ArrayList&lt;Card&gt;
+getPlayedCards()</span> - this method returns a
+list of the cards that have been played, in order, since the last deck remix.
+(A deck "remix" occurs if/when the draw pile becomes exhausted, and all of
+the cards in the discard pile are reshuffled and turned face down to become
+the new draw pile.) Interesting note: just from experimenting with my
+simulator, deck remixes are pretty uncommon. It seems that a large majority
+of games complete without ever requiring a deck remix, even when the
+players have the dumbest possible strategy (just play a random matching
+card.)</li>
+
+<li><span style="font-family:monospace;">int[]
+getTotalScoreOfUpcomingPlayers()</span> - finally, this array tells you the total
+cumulative score for each player (in the grand 50,000-game Uno match), in
+order of their presumed turns, in the same way that arrays from the first
+two method calls in
+this list represented that order.</li>
+</ul>
+
+<p>You can take advantage of the game state object by choosing to call any
+of these methods on it that you choose. Note that you are also free to ignore
+any of them if they're not of interest to you in developing your strategy.</p>
+
+<p>The callColor() method is simpler. It takes only one parameter,
+telling you what's in your hand:</p>
+
+<pre>
+    public Color callColor(ArrayList&lt;Card&gt; hand);
+</pre>
+
+<p>My code will call this method of yours when you have just played a wild
+and I need to know what color you want to call. It must return one of the
+four valid Color values (<i>not</i> Color.NONE.)</p>
+
+</ul>
+
+<p>Finally, note that these two methods do <i>not</i> contain the word
+<tt>static</tt>, and they <i>do</i> contain the word <tt>public</tt>. There
+are deep reasons for these two facts that you will eventually learn. You do
+not need to know them now.</p>
+
+
+<h2>Uno Tournament</h2>
+
+<p>Two weeks from Friday, during class, we will hold a bracket-style Uno
+tournament in which all functioning programs are entered as participants.
+Drama and excitement will be aplenty as the big screen shows the action.
+The grand prize winner will receive a valuable prize not available in
+stores.</p>
+
+<h2>Grading</h2>
+
+<p>You have two grading options for this assignment. You can go for +50XP, or
+you can go for +60XP.</p>
+
+<h3>For +50XP...</h3>
+
+<p>To receive +50XP for this assignment, it is only necessary that your
+methods return <b>a correct answer</b>. In other words, your play() method
+must always return the index of a card that can in fact be played on the up
+card, and must always return -1 only in the case where no card can in fact
+be legally played. Your callColor() method must simply always return a
+valid Color. Beyond that, it doesn't matter how "dumb" your methods are, or
+how badly they play: they only must play according to the rules.</p>
+
+<h3>For +60XP...</h3>
+
+<p>To get +60XP, you must go beyond simply legality and attempt to implement
+an intelligent strategy for playing the game. You must strive to play not
+only a legal card, but a <i>good</i> card. Think about how <i>you</i>
+actually play the game of Uno: how do you decide what card to play? What
+color to call? Whether to switch the color or stick with it? When to part
+with a wild card? Try to write code that imitates your thought process. (If
+you're stuck for ideas, see the following section "Strategy ideas.")</p>
+ 
+<p>Now how will I judge whether you "attempted to implement an intelligent
+strategy?" Good question. Here's my grading criteria:</p>
+
+<ol>
+<li>If you place in the Final Four of the Uno tournament, your program will
+automatically and unquestionably judged to be of +60XP quality.</li>
+<li>If you do not place in the Final Four, I will look at your
+<b>well-commented, compellingly documented</b> code to judge whether you
+attempted a non-trivial, intelligent approach. Your comments should narrate
+your algorithm completely and transparently. They should shed light on what
+your code is doing, and why, and explain the theory behind your approach. I
+will award points solely at my discretion based on how thorough and creative
+your program looks to me.</li>
+</ol>
+
+<h3>For something worse...</h3>
+
+<p>Note that your program cannot be entered into the tournament if it does
+not meet the "for +50XP..." criteria above. This is for the simple reason
+that it will crash my simulator. Only methods that return correct answers
+will be eligible for the tournament, and I will test this with my test 
+suite (see below.)</p>
+
+
+<h2>Vetting bugs</h2>
+
+<p>In order to thoroughly test your play() method, I have designed a
+comprehensive test suite. This program, when run properly, will execute
+your play() method on 10,000 random hands, ensuring that in each case you
+return a correct result. It is highly recommended that you perform this
+operation on your code before you turn it in. This is what I will use to
+determine whether your code is safe to enter the tournament.</p>
+
+<p>To run it, perform the following steps:</p>
+
+<ol>
+<li>In NetBeans, right-click on your "uno" package (not your "Uno" project)
+and choose "New &gt; Java Class". Call the new class "TestCaseProcessor", and
+paste the entire contents of
+<a href="TestCaseProcessor.java.txt">the tester program</a> 
+into the window. Change "jsmith" to your username, and save.</li>
+<li>Also in NetBeans, right-click again on your "uno" package and choose
+"New &gt; Other...". <b>In the left "Categories" pick list, click on
+"Other" (at the bottom.) Then, in the right "File Types" pick list, click
+on "Empty File" (near the bottom.)</b> Press "Next". Name the file "testCases.txt", and save. Now paste the entire contents of <a href="testCases.txt">this file</a>
+into the window, and save again.
+</li>
+<li>Change the run-time configuration of the program:</li>
+<ol type=a>
+<li>In NetBeans, choose "Run &gt; Set Project Configuration ... &gt;
+Customize ...".</li>
+<li>Click on "Run".</li>
+<li>Set the "Main Class" to be "uno.TestCaseProcessor".</li>
+<li>Set the Arguments to your userid (e.g., rjones2).</li>
+<li>Change the "Working Directory" by
+pressing the "Browse..." button next to it. Navigate into your capitalized
+"Uno" project, then into "src" and finally "uno". Select "uno" as the
+working directory.</li>
+</ol>
+</li>
+<li>Run it, clicking the green arrow. You should either get happy messages
+telling you how many test cases have passed as they run, or else you should
+get a helpful message about how one of them didn't pass.</li>
+<li>Stare hard at the message and then fix your error.</li>
+</ol>
+</li>
+
+<h2>Strategy ideas</h2>
+
+<p>So you want to whip up on your fellow programmers. How can you do this?
+What should be a good strategy for choosing a card from an Uno hand? Here
+are some ideas:</p>
+
+<ul>
+<li>Maybe since your hand's points go to an opponent if you lose
+the round, you should try to minimize the number of points you hold,
+getting rid of wild cards as soon as you can, then the special cards, and
+then 9's before 8's, 8's before 7's, etc.</li>
+<li>On the other hand, it seems dumb to get rid of a wild card when you
+don't have to, since you can always hold it and play it later. So maybe you
+want to only play wild cards when you absolutely have to.</li>
+<li>Or maybe there's some middle "sweet spot" between ditching wilds
+too early and holding on to them too long and getting stuck with them.</li>
+<li>When you call a color, surely you want to call the color you have the
+most cards of.</li>
+<li>On the other hand, if you have green 0, 2, and 3, and red 8 and Skip,
+you have a heck of a lot more points represented in your red cards, so
+maybe it would be better to call red to get rid of those sooner.</li>
+<li>Suppose the up card is a red 5. You have both a red 3 and a blue 5.
+Should you change the color to blue or keep it red? This is similar to the
+decision about
+what to call when you play a wild, but with a twist: the up card may be red
+because one of your opponents <i>wanted</i> it to be red, and so it may be
+in your best interests to change it.</li>
+<li>Interestingly, there are fewer "0" cards than any other 1-9 number.
+(The standard deck has two "2s" and two "5s" and two "6s" of every color,
+but only <i>one</i> "0" of each color.) So playing a 0
+card means it's less likely that an opponent will be able to change the
+color before you get a chance to play again. So maybe if you have multiple
+cards in a color, and one of them is a 0, you want to play that early on,
+even though it's worth less points, since you will be more likely to be
+able to get rid of another card in that color.</li>
+<li>Maybe all these decisions are affected by how big your overall hand is.
+If you only have a few cards left, you want to do everything possible to win
+the round and claim the prize, even if this means taking short-term risks. If
+you have a ton of cards, on the other hand, you might want to forget about
+winning the round and simply ditch as many points as possible, figuring to
+lose as small as possible.</li>
+<li>Of course, your fellow students are reading these ideas too, so...maybe
+you should anticipate their following them and counteract. For instance,
+if everyone is going to try and ditch high point values first, you could
+try to keep high point values early in the game, so that it's less likely
+someone can switch the color on you later on by playing a card of the same
+rank. Or, if everyone is going to try to switch the color to favor their
+hand, you might want to deliberately call a <i>different</i> color when you
+have the choice, depending on circumstances.</li>
+<li>Etc. Etc. Etc.</li>
+</ul>
+
+<h2>Trash talking and other mean-spirited ways of trying to intimidate your
+opponents</h2>
+<p>Heck yeah. Do it.</p>
+
+<h2>Turning it in</h2>
+
+<p>To submit this program, send me an email with your jsmith_UnoPlayer.java
+file attached. (Double-check that it's actually attached!) The email should
+have the subject line "<b>CPSC 220 program #3 turn-in</b>". If you're going
+for +60XP, the body of this email should contain a concise summary your
+program's strategy. (If there is no paragraph describing this in your email, I
+will assume you are going for +50XP.)</p>
+
+<h1>Good luck!!</h1>
+</BODY>
+</HTML>
