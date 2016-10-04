@@ -4,6 +4,14 @@ package uno;
 import java.util.ArrayList;
 
 public class jrivera2_UnoPlayer implements UnoPlayer {
+    
+    int[] red = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2,25};
+    int[] green = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2,25};
+    int[] blue = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2,25};
+    int[] yellow = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2,25};
+    int wild = 4;
+    int wildD4 = 4;
+
 
     /**
      * play - This method is called when it's your turn and you need to
