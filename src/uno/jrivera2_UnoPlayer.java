@@ -9,6 +9,10 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     int[] green = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2,25};
     int[] blue = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2,25};
     int[] yellow = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2,25};
+    double[] probRed = new double[13];
+    double[] probGreen = new double[13];
+    double[] probBlue = new double[13];
+    double[] probYellow = new double[13];
     int wild = 4;
     int wildD4 = 4;
 
@@ -46,8 +50,10 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
      */
     public int play(ArrayList<Card> hand, Card upCard, Color calledColor,
         GameState state) {
-
         // THIS IS WHERE YOUR AMAZING CODE GOES
+
+        cardsLeft(state.getPlayedCards());
+        cardsLeft(hand);
         return -1;
     }
 
@@ -64,6 +70,54 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
 
         // THIS IS WHERE YOUR AMAZING CODE GOES
         return null;
+    }
+    
+    
+    public void cardsLeft(ArrayList<Card> played)
+    {
+        for(int i=0;i<played.size();i++)
+        {
+            switch(played.get(i).getRank())
+            {
+                case WILD_D4:
+                wildD4 -= 1;
+                break;
+                case WILD:
+                    wild -= 1;
+                    break;
+                case DRAW_TWO:
+                    adjArray(played.get(i).getColor(),12);
+                    break;
+                case SKIP:
+                    adjArray(played.get(i).getColor(),11);
+                    break;
+                case REVERSE:
+                    adjArray(played.get(i).getColor(),10);
+                    break;
+                case NUMBER:
+                    adjArray(played.get(i).getColor(),played.get(i).getNumber());
+                    break;
+            }
+        }
+    }
+    
+    public void adjArray(Color card, int i)
+    {
+        switch(card)
+        {
+            case RED:
+                red[i]--;
+                break;
+            case GREEN:
+                green[i]--;
+                break;
+            case BLUE:
+                blue[i]--;
+                break;
+            case YELLOW:
+                yellow[i]--;
+                break;
+        }
     }
  
 }
