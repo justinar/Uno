@@ -5,33 +5,33 @@ import java.util.ArrayList;
 
 public class jrivera2_UnoPlayer implements UnoPlayer {
     //color array in order 0-9 numbers, 10 reverse, 11 skip, 12 draw 2
-    int[] red = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
-    int[] green = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
-    int[] blue = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
-    int[] yellow = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
+    Integer[] red = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
+    Integer[] green = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
+    Integer[] blue = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
+    Integer[] yellow = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
     //value prob
-    double[] probRed = new double[13];
-    double[] probGreen = new double[13];
-    double[] probBlue = new double[13];
-    double[] probYellow = new double[13];
+    Double[] probRed = new Double[13];
+    Double[] probGreen = new Double[13];
+    Double[] probBlue = new Double[13];
+    Double[] probYellow = new Double[13];
     //color prob
-    double probR;
-    double probG;
-    double probB;
-    double probY;    
+    Double probR;
+    Double probG;
+    Double probB;
+    Double probY;    
     //num wilds left
-    int wild = 4;
-    int wildD4 = 4;
+    Integer wild = 4;
+    Integer wildD4 = 4;
     //wild prob
-    double probWild;
-    double probWildD4;
+    Double probWild;
+    Double probWildD4;
     //Cards in deck
-    int CID = 108;
+    Integer CID = 108;
     //player probability in format red, green, blue, yellow
-    double[] p1 = new double[4];
-    double[] p2 = new double[4];
-    double[] p3 = new double[4];
-    double[] hand = new double[4];
+    Double[] p1 = new Double[4];
+    Double[] p2 = new Double[4];
+    Double[] p3 = new Double[4];
+    Double[] hand = new Double[4];
 
 
     /**
@@ -72,22 +72,22 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         cardsLeft(state.getPlayedCards());
         cardsLeft(hand);
         prob();
-        System.out.printf("%f%n%f%n%f%n%f%n%f%n%d%n",probR,probG,probB,probWild,probWildD4,CID);
-        for(int i:red)System.out.print(red[i]);
+        System.out.printf("%f%n%f%n%f%n%f%n%f%n%f%n%d%n%d%n%d%n",probR,probG,probB,probY,probWild,probWildD4,CID,wild,wildD4);
+        for(int i=0;i<red.length;i++)System.out.print(red[i]);
         System.out.println();
-        for(int i:red)System.out.print(green[i]);
+        for(int i=0;i<red.length;i++)System.out.print(green[i]);
         System.out.println();
-        for(int i:red)System.out.print(blue[i]);
+        for(int i=0;i<red.length;i++)System.out.print(blue[i]);
         System.out.println();
-        for(int i:red)System.out.print(yellow[i]);
+        for(int i=0;i<red.length;i++)System.out.print(yellow[i]);
         System.out.println();
-        for(int i:red)System.out.print(probRed[i]);
+        for(int i=0;i<red.length;i++)System.out.print(probRed[i]);
         System.out.println();
-        for(int i:red)System.out.print(probGreen[i]);
+        for(int i=0;i<red.length;i++)System.out.print(probGreen[i]);
         System.out.println();
-        for(int i:red)System.out.print(probBlue[i]);
+        for(int i=0;i<red.length;i++)System.out.print(probBlue[i]);
         System.out.println();
-        for(int i:red)System.out.print(probYellow[i]);
+        for(int i=0;i<red.length;i++)System.out.print(probYellow[i]);
         System.out.println();
         return -1;
     }
@@ -165,17 +165,17 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
             probBlue[i]=(double)blue[i]/CID;
             probYellow[i]=(double)yellow[i]/CID;
         }
-        probWild = wild/CID;
-        probWildD4 = wildD4/CID;
-        probR = addArray(red)/CID;
-        probG = addArray(green)/CID;
-        probB = addArray(blue)/CID;
-        probY = addArray(yellow)/CID;        
+        probWild = wild/(double)CID;
+        probWildD4 = wildD4/(double)CID;
+        probR = addArray(red)/(double)CID;
+        probG = addArray(green)/(double)CID;
+        probB = addArray(blue)/(double)CID;
+        probY = addArray(yellow)/(double)CID;        
     }
     
-    public int addArray(int[] arrayTest)
+    public Integer addArray(Integer[] arrayTest)
     {
-        int val=0;
+        Integer val=0;
         for(int i=0;i<arrayTest.length;i++)
         {
             val += arrayTest[i];
