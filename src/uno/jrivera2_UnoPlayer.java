@@ -69,26 +69,10 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         GameState state) {
         // THIS IS WHERE YOUR AMAZING CODE GOES
 
-        cardsLeft(state.getPlayedCards());
-        cardsLeft(hand);
-        prob();
-        System.out.printf("%f%n%f%n%f%n%f%n%f%n%f%n%d%n%d%n%d%n",probR,probG,probB,probY,probWild,probWildD4,CID,wild,wildD4);
-        for(int i=0;i<red.length;i++)System.out.print(red[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(green[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(blue[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(yellow[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probRed[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probGreen[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probBlue[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probYellow[i]);
-        System.out.println();
+        cardsLeft(state.getPlayedCards());//find cards not played
+        cardsLeft(hand);//find cards not held
+        prob();//find probability cards available for play will be played
+        diagnostic();//check variable states
         return -1;
     }
 
@@ -107,7 +91,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         return null;
     }
     
-    
+    //find cards left in deck
     public void cardsLeft(ArrayList<Card> played)
     {
         for(int i=0;i<played.size();i++)
@@ -155,7 +139,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
                 break;
         }
     }
-    
+    //find probability of card being played
     public void prob()
     {
         for(int i=0;i<13;i++)
@@ -181,6 +165,27 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
             val += arrayTest[i];
         }
         return val;
+    }
+    //print main variables
+    public void diagnostic()
+    {
+        System.out.printf("%f%n%f%n%f%n%f%n%f%n%f%n%d%n%d%n%d%n",probR,probG,probB,probY,probWild,probWildD4,CID,wild,wildD4);
+        for(int i=0;i<red.length;i++)System.out.print(red[i]);
+        System.out.println();
+        for(int i=0;i<red.length;i++)System.out.print(green[i]);
+        System.out.println();
+        for(int i=0;i<red.length;i++)System.out.print(blue[i]);
+        System.out.println();
+        for(int i=0;i<red.length;i++)System.out.print(yellow[i]);
+        System.out.println();
+        for(int i=0;i<red.length;i++)System.out.print(probRed[i]);
+        System.out.println();
+        for(int i=0;i<red.length;i++)System.out.print(probGreen[i]);
+        System.out.println();
+        for(int i=0;i<red.length;i++)System.out.print(probBlue[i]);
+        System.out.println();
+        for(int i=0;i<red.length;i++)System.out.print(probYellow[i]);
+        System.out.println();
     }
  
 }
