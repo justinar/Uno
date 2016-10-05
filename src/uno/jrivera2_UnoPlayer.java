@@ -9,13 +9,20 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     int[] green = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
     int[] blue = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
     int[] yellow = new int[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
+    //value prob
     double[] probRed = new double[13];
     double[] probGreen = new double[13];
     double[] probBlue = new double[13];
     double[] probYellow = new double[13];
+    //color prob
+    double probR;
+    double probG;
+    double probB;
+    double probY;    
     //num wilds left
     int wild = 4;
     int wildD4 = 4;
+    //wild prob
     double probWild;
     double probWildD4;
     //Cards in deck
@@ -64,6 +71,24 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
 
         cardsLeft(state.getPlayedCards());
         cardsLeft(hand);
+        prob();
+        System.out.printf("%f%n%f%n%f%n%f%n%f%n%d%n",probR,probG,probB,probWild,probWildD4,CID);
+        for(int i:red)System.out.print(red[i]);
+        System.out.println();
+        for(int i:red)System.out.print(green[i]);
+        System.out.println();
+        for(int i:red)System.out.print(blue[i]);
+        System.out.println();
+        for(int i:red)System.out.print(yellow[i]);
+        System.out.println();
+        for(int i:red)System.out.print(probRed[i]);
+        System.out.println();
+        for(int i:red)System.out.print(probGreen[i]);
+        System.out.println();
+        for(int i:red)System.out.print(probBlue[i]);
+        System.out.println();
+        for(int i:red)System.out.print(probYellow[i]);
+        System.out.println();
         return -1;
     }
 
@@ -133,24 +158,29 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     
     public void prob()
     {
-        for(int i=0;i<red.length;i++)
+        for(int i=0;i<13;i++)
         {
             probRed[i]=(double)red[i]/CID;
-        }
-        for(int i=0;i<green.length;i++)
-        {
             probGreen[i]=(double)green[i]/CID;
-        }
-        for(int i=0;i<blue.length;i++)
-        {
             probBlue[i]=(double)blue[i]/CID;
-        }
-        for(int i=0;i<yellow.length;i++)
-        {
             probYellow[i]=(double)yellow[i]/CID;
         }
         probWild = wild/CID;
         probWildD4 = wildD4/CID;
+        probR = addArray(red)/CID;
+        probG = addArray(green)/CID;
+        probB = addArray(blue)/CID;
+        probY = addArray(yellow)/CID;        
+    }
+    
+    public int addArray(int[] arrayTest)
+    {
+        int val=0;
+        for(int i=0;i<arrayTest.length;i++)
+        {
+            val += arrayTest[i];
+        }
+        return val;
     }
  
 }
