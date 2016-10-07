@@ -126,7 +126,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     {
         for(int i=0;i<4;i++)
         {
-            for(int j=0;i<13;i++)
+            for(int j=0;j<13;j++)
             {
                 probValue[i][j]=numCards[i][j]/(double)CID;
             }
@@ -151,13 +151,25 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     //print main variables
     public void diagnostic()
     {
-        System.out.printf("%f%n%f%n%f%n%f%n%f%n%f%n%d%n%d%n%d%n",probWild,probWildD4,CID,wild,wildD4);
+        System.out.printf("%f%n%f%n%d%n%d%n%d%n",probWild,probWildD4,CID,wild,wildD4);
         for(int i=0;i<4;i++)System.out.print(probColor[i]);
         System.out.println();
-        for(int i=0;i<4;i++){for(int j=0;j<13;j++)System.out.print(numCards[i][j]);};
-        System.out.println();
-        for(int i=0;i<4;i++){for(int j=0;j<13;j++)System.out.print(probValue[i][j]);};
-        System.out.println();
+        for(int i=0;i<4;i++)
+        {
+            for(int j=0;j<13;j++)
+            {
+                System.out.print(numCards[i][j]);
+            }
+            System.out.println();
+        }
+        for(int i=0;i<4;i++)
+        {
+            for(int j=0;j<13;j++)
+            {
+                System.out.print(probValue[i][j]);
+            }
+            System.out.println();
+        }
     }
     //set preferences based on hand and players
     public void pref()
