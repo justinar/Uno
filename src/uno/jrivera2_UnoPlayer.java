@@ -5,20 +5,14 @@ import java.util.ArrayList;
 
 public class jrivera2_UnoPlayer implements UnoPlayer {
     //color array in order 0-9 numbers, 10 reverse, 11 skip, 12 draw 2
-    Integer[] red = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
-    Integer[] green = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
-    Integer[] blue = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
-    Integer[] yellow = new Integer[] {1,2,2,2,2,2,2,2,2,2,2,2,2};
+    Integer[][] numCards = new Integer[][]{ {1,2,2,2,2,2,2,2,2,2,2,2,2},   //0-Red
+                                            {1,2,2,2,2,2,2,2,2,2,2,2,2},   //1-Yellow
+                                            {1,2,2,2,2,2,2,2,2,2,2,2,2},   //2-Green
+                                            {1,2,2,2,2,2,2,2,2,2,2,2,2},}; //3-Blue
     //value prob
-    Double[] probRed = new Double[13];
-    Double[] probGreen = new Double[13];
-    Double[] probBlue = new Double[13];
-    Double[] probYellow = new Double[13];
+    Double[][] probValue = new Double[4][13];
     //color prob
-    Double probR;
-    Double probG;
-    Double probB;
-    Double probY;    
+    Double[] probColor = new Double[4];
     //num wilds left
     Integer wild = 4;
     Integer wildD4 = 4;
@@ -27,11 +21,14 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     Double probWildD4;
     //Cards in deck
     Integer CID = 108;
-    //player probability in format red, green, blue, yellow
-    Double[] p1 = new Double[4];
-    Double[] p2 = new Double[4];
-    Double[] p3 = new Double[4];
-    Double[] hand = new Double[4];
+    //player probability in format
+    //[0][x] 1st in line,[1][x] 2nd in line,[2][x] 3rd in line,[3][x] hand
+    //[x][0]red, [x][1]yellow, [x][2]green, [x][3]blue
+    Double[][] probPlayerColor = new Double[4][4];
+    //preference for self
+    Color[] prefColor = new Color[4];
+    Integer[] prefNumber = new Integer[10];
+    Rank[] prefRank = new Rank[6];
 
 
     /**
@@ -72,7 +69,10 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         cardsLeft(state.getPlayedCards());//find cards not played
         cardsLeft(hand);//find cards not held
         prob();//find probability cards available for play will be played
+        //vvvvvvv remove for final vvvvvvv//
         diagnostic();//check variable states
+        //^^^^^^^ remove for final ^^^^^^^//
+        pref();//set preferences
         return -1;
     }
 
@@ -105,58 +105,40 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
                     wild -= 1;
                     break;
                 case DRAW_TWO:
-                    adjArray(played.get(i).getColor(),12);
+                    numCards[played.get(i).getColor().ordinal()][12]--;
                     break;
                 case SKIP:
-                    adjArray(played.get(i).getColor(),11);
+                    numCards[played.get(i).getColor().ordinal()][11]--;
                     break;
                 case REVERSE:
-                    adjArray(played.get(i).getColor(),10);
+                    numCards[played.get(i).getColor().ordinal()][10]--;
                     break;
                 case NUMBER:
-                    adjArray(played.get(i).getColor(),played.get(i).getNumber());
+                    numCards[played.get(i).getColor().ordinal()][played.get(i).getNumber()]--;
                     break;
             }
             CID--;
         }
     }
     
-    public void adjArray(Color card, int i)
-    {
-        switch(card)
-        {
-            case RED:
-                red[i]--;
-                break;
-            case GREEN:
-                green[i]--;
-                break;
-            case BLUE:
-                blue[i]--;
-                break;
-            case YELLOW:
-                yellow[i]--;
-                break;
-        }
-    }
     //find probability of card being played
     public void prob()
     {
-        for(int i=0;i<13;i++)
+        for(int i=0;i<4;i++)
         {
-            probRed[i]=(double)red[i]/CID;
-            probGreen[i]=(double)green[i]/CID;
-            probBlue[i]=(double)blue[i]/CID;
-            probYellow[i]=(double)yellow[i]/CID;
+            for(int j=0;i<13;i++)
+            {
+                probValue[i][j]=numCards[i][j]/(double)CID;
+            }
         }
         probWild = wild/(double)CID;
         probWildD4 = wildD4/(double)CID;
-        probR = addArray(red)/(double)CID;
-        probG = addArray(green)/(double)CID;
-        probB = addArray(blue)/(double)CID;
-        probY = addArray(yellow)/(double)CID;        
+        for(int i=0;i<4;i++)
+        {
+            probColor[i] = addArray(numCards[i])/(double)CID;
+        }
     }
-    
+    //find total value of array
     public Integer addArray(Integer[] arrayTest)
     {
         Integer val=0;
@@ -169,23 +151,35 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     //print main variables
     public void diagnostic()
     {
-        System.out.printf("%f%n%f%n%f%n%f%n%f%n%f%n%d%n%d%n%d%n",probR,probG,probB,probY,probWild,probWildD4,CID,wild,wildD4);
-        for(int i=0;i<red.length;i++)System.out.print(red[i]);
+        System.out.printf("%f%n%f%n%f%n%f%n%f%n%f%n%d%n%d%n%d%n",probWild,probWildD4,CID,wild,wildD4);
+        for(int i=0;i<4;i++)System.out.print(probColor[i]);
         System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(green[i]);
+        for(int i=0;i<4;i++){for(int j=0;j<13;j++)System.out.print(numCards[i][j]);};
         System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(blue[i]);
+        for(int i=0;i<4;i++){for(int j=0;j<13;j++)System.out.print(probValue[i][j]);};
         System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(yellow[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probRed[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probGreen[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probBlue[i]);
-        System.out.println();
-        for(int i=0;i<red.length;i++)System.out.print(probYellow[i]);
-        System.out.println();
+    }
+    //set preferences based on hand and players
+    public void pref()
+    {
+        pColor();
+        pRank();
+        pNumber();
+    }
+    //set color preferences
+    public void pColor()
+    {
+        
+    }
+    //set rank preferences
+    public void pRank()
+    {
+        
+    }
+    //set number preferences
+    public void pNumber()
+    {
+        
     }
  
 }
