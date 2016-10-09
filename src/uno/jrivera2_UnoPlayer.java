@@ -21,12 +21,15 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     Double probWildD4;
     //Cards in deck
     Integer CID = 108;
+    //Every player's card color played this game in format
+    //[0] left,[1] center,[2] right,[3] self
+    ArrayList<Color>[] played = new ArrayList[4];
     //player probability in format
     //[0][x] 1st in line,[1][x] 2nd in line,[2][x] 3rd in line,[3][x] hand
     //[x][0]red, [x][1]yellow, [x][2]green, [x][3]blue
     Double[][] probPlayerColor = new Double[4][4];
     //preference for self
-    Color[] prefColor = new Color[4];
+    Color prefColor;
     Integer[] prefNumber = new Integer[10];
     Rank[] prefRank = new Rank[6];
 
@@ -62,10 +65,8 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
      * in which case you will be forced to draw a card (this will happen
      * automatically for you.)
      */
-    public int play(ArrayList<Card> hand, Card upCard, Color calledColor,
-        GameState state) {
-        // THIS IS WHERE YOUR AMAZING CODE GOES
-
+    public int play(ArrayList<Card> hand, Card upCard, Color calledColor,GameState state)
+    {
         cardsLeft(state.getPlayedCards());//find cards not played
         cardsLeft(hand);//find cards not held
         prob();//find probability cards available for play will be played
@@ -73,7 +74,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         diagnostic();//check variable states
         //^^^^^^^ remove for final ^^^^^^^//
         pref();//set preferences
-        return -1;
+        return 5;
     }
 
 
@@ -85,10 +86,9 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
      * You must return a valid Color value from this method. You must not
      * return the value Color.NONE under any circumstances.
      */
-    public Color callColor(ArrayList<Card> hand) {
-
-        // THIS IS WHERE YOUR AMAZING CODE GOES
-        return null;
+    public Color callColor(ArrayList<Card> hand)
+    {
+        return prefColor;
     }
     
     //find cards left in deck
@@ -181,7 +181,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     //set color preferences
     public void pColor()
     {
-        
+        prefColor = Color.BLUE;
     }
     //set rank preferences
     public void pRank()
@@ -193,5 +193,51 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     {
         
     }
- 
+    //find cards played
+    public void cardHistory(GameState state)
+    {
+        ArrayList<Card> history =  state.getPlayedCards();
+        //direction of play
+        boolean foward = true;
+        //player #
+        int c = -1;
+        Color currentColor = Color.NONE;
+        for(int i=history.size();i>0;i--)
+        {
+            switch(history.get(i).getRank())
+            {
+                case REVERSE:
+                    foward = !foward;
+                    currentColor = history.get(i).getColor();
+                    break;
+                case SKIP:
+                    c++;
+                    currentColor = history.get(i).getColor();
+                    break;
+                case WILD:
+                    currentColor = history.get(i-1).getColor();
+                    break;
+                case WILD_D4:
+                    currentColor = history.get(i-1).getColor();
+                    break;
+                case DRAW_TWO:
+                    currentColor = history.get(i).getColor();
+                    break;
+                case NUMBER:
+                    currentColor = history.get(i).getColor();
+                    break;
+            }
+            if(foward)
+            {
+                if(c==4) c=0;
+                else c++;
+            }
+            else if(!foward)
+            {
+                if(c==0) c=4;
+                else c--;
+            }
+            played[c].add(currentColor);
+        }
+    }
 }

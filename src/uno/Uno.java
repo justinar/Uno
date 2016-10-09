@@ -29,6 +29,7 @@ public class Uno {
         else {
             if (cardPlayed == 0 || cardPlayed == 1 || cardPlayed == 5) {
                 System.out.println("Player played " + hand.get(cardPlayed));
+                if(cardPlayed == 5)System.out.println(jup.callColor(hand));
             }
             else {
                 System.out.println("Player tried to play " + hand.get(cardPlayed) + ", which is an error.");
