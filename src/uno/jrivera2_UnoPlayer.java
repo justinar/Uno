@@ -23,7 +23,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     Integer CID = 108;
     //Every player's card color played this game in format
     //[0] left,[1] center,[2] right,[3] self
-    ArrayList<Color>[] played = new ArrayList[4];
+    ArrayList<ArrayList<Color>> played = new ArrayList<ArrayList<Color>>();
     //player probability in format
     //[0][x] 1st in line,[1][x] 2nd in line,[2][x] 3rd in line,[3][x] hand
     //[x][0]red, [x][1]yellow, [x][2]green, [x][3]blue
@@ -67,14 +67,16 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
      */
     public int play(ArrayList<Card> hand, Card upCard, Color calledColor,GameState state)
     {
+        initialize();
         cardsLeft(state.getPlayedCards());//find cards not played
         cardsLeft(hand);//find cards not held
+        cardHistory(state);
         prob();//find probability cards available for play will be played
         //vvvvvvv remove for final vvvvvvv//
         diagnostic();//check variable states
         //^^^^^^^ remove for final ^^^^^^^//
         pref();//set preferences
-        return 5;
+        return gameTime(hand,upCard,calledColor,state);
     }
 
 
@@ -90,7 +92,21 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     {
         return prefColor;
     }
-    
+    //set relevent variables to 0
+    public void initialize()
+    {
+        played.add(new ArrayList());
+        played.add(new ArrayList());
+        played.add(new ArrayList());
+        played.add(new ArrayList());
+        for(int i=0;i<4;i++)
+        {
+            for(int j=0;j<4;j++)
+            {
+                probPlayerColor[i][j]=(double)0;//must cast 0 as double before it can be wrapped as Double thanks to Java not believing in me
+            }
+        }
+    }
     //find cards left in deck
     public void cardsLeft(ArrayList<Card> played)
     {
@@ -136,6 +152,13 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         for(int i=0;i<4;i++)
         {
             probColor[i] = addArray(numCards[i])/(double)CID;
+        }
+        for(int i=0;i<4;i++)
+        {
+            for(int j=0;j<played.get(i).size();j++)
+            {
+                probPlayerColor[i][played.get(i).get(j).ordinal()]+=j;
+            }
         }
     }
     //find total value of array
@@ -202,7 +225,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         //player #
         int c = -1;
         Color currentColor = Color.NONE;
-        for(int i=history.size();i>0;i--)
+        for(int i=history.size()-1;i>=0;i--)
         {
             switch(history.get(i).getRank())
             {
@@ -229,15 +252,58 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
             }
             if(foward)
             {
-                if(c==4) c=0;
+                if(c==3) c=0;
                 else c++;
             }
             else if(!foward)
             {
-                if(c==0) c=4;
+                if(c==0) c=3;
                 else c--;
             }
-            played[c].add(currentColor);
+            played.get(c).add(currentColor);
         }
+    }
+    //stratagery thingy ma bob here
+    public int gameTime(ArrayList<Card> hand, Card upCard, Color calledColor,GameState state)
+    {
+        int choice = -1;
+        //if next person has less than 3 cards
+        if(state.getNumCardsInHandsOfUpcomingPlayers()[0]<3)
+        {
+            //if any one 
+        }
+        //if next person has few cards than I
+        if(state.getNumCardsInHandsOfUpcomingPlayers()[0]<state.getNumCardsInHandsOfUpcomingPlayers()[3])
+        {
+            //if person following them is doing worse
+            if(state.getNumCardsInHandsOfUpcomingPlayers()[1]>3||state.getNumCardsInHandsOfUpcomingPlayers()[1]>state.getNumCardsInHandsOfUpcomingPlayers()[3])
+            {
+                //skip
+            }
+            //if last person to go is doing worse
+            if(state.getNumCardsInHandsOfUpcomingPlayers()[2]>3||state.getNumCardsInHandsOfUpcomingPlayers()[2]>state.getNumCardsInHandsOfUpcomingPlayers()[3])
+            {
+                //reverse
+            }
+        }
+        return -1;
+    }
+    //find card matching rank
+    public int findRank(ArrayList<Card> hand, Rank rank)
+    {
+        for(int i =0;i<hand.size();i++)
+        {
+            if(hand.get(i).getRank().equals(rank)){return i;}
+        }
+        return -1;
+    }
+    //find card matching color & rank
+    public int findRankColor(ArrayList<Card> hand, Rank rank, Color color)
+    {
+        for(int i =0;i<hand.size();i++)
+        {
+            if(hand.get(i).getRank().equals(rank)){if(hand.get(i).getColor().equals(color)){return i;}}
+        }
+        return -1;        
     }
 }

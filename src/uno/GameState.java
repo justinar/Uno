@@ -69,6 +69,13 @@ public class GameState {
      * if they choose.
      */
     public ArrayList<Card> getPlayedCards() {
-        return new java.util.ArrayList<Card>();
+        ArrayList<Card> played = new java.util.ArrayList<Card>();
+        played.add(new Card(UnoPlayer.Color.RED, UnoPlayer.Rank.NUMBER, 9));
+        played.add(new Card(UnoPlayer.Color.GREEN, UnoPlayer.Rank.NUMBER, 5));
+        played.add(new Card(UnoPlayer.Color.GREEN, UnoPlayer.Rank.NUMBER, 4));
+        played.add(new Card(UnoPlayer.Color.BLUE, UnoPlayer.Rank.NUMBER, 1));
+        played.add(new Card(UnoPlayer.Color.BLUE, UnoPlayer.Rank.NUMBER, 2));
+        played.add(new Card(UnoPlayer.Color.YELLOW, UnoPlayer.Rank.NUMBER, 6));
+        return played;
     }
 }
