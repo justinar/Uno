@@ -72,7 +72,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
         cardHistory(state);
         prob();//find probability cards available for play will be played
         //vvvvvvv remove for final vvvvvvv//
-        diagnostic();//check variable states
+        //diagnostic();//check variable states
         //^^^^^^^ remove for final ^^^^^^^//
         pref();//set preferences
         return gameTime(hand, upCard, calledColor, state);
@@ -91,6 +91,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
 
     //set relevent variables to 0
     public void initialize() {
+        played.clear();
         played.add(new ArrayList());
         played.add(new ArrayList());
         played.add(new ArrayList());
@@ -101,6 +102,7 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
                 //before it can be wrapped as Double thanks to Java not
                 //believing in me
             }
+            played.get(i).clear();
         }
     }
 
@@ -255,61 +257,48 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
     //stratagery thingy ma bob here
     public int gameTime(ArrayList<Card> hand, Card upCard, Color calledColor,
             GameState state) {
-        int choice = -1;
-        //if next person has less than 3 cards
-        if (state.getNumCardsInHandsOfUpcomingPlayers()[0] < 3) {
-            //if next one has less than 3 cards
-            if (state.getNumCardsInHandsOfUpcomingPlayers()[1] < 3) {
-                //if last one has less than 3 cards
-                if (state.getNumCardsInHandsOfUpcomingPlayers()[2] < 3) {
-                    //if I have less than 3 cards
-                    if (state.getNumCardsInHandsOfUpcomingPlayers()[3] < 3) {
-                        //play anything
-                        if (findRank(hand, Rank.WILD) != -1) {
-                            return findRank(hand, Rank.WILD);
-                        }
-                        if (findRank(hand, Rank.WILD_D4) != -1) {
-                            return findRank(hand, Rank.WILD_D4);
-                        }
-                        if (findColor(hand, upCard.getColor()) != -1) {
-                            return findColor(hand, upCard.getColor());
-                        }
-                        if (findNum(hand, upCard.getNumber()) != -1
-                                && upCard.getRank().equals(Rank.NUMBER)) {
-                            return findNum(hand, upCard.getNumber());
-                        }
-                        if (findRank(hand, upCard.getRank()) != -1) {
-                            return findRank(hand, upCard.getRank());
-                        }
-                        return -1;
-                    }
-                    //try to give them more cards
-                    if (findRank(hand, Rank.WILD_D4) != -1) {
-                        return findRank(hand, Rank.WILD_D4);
-                    }
-                    if (findRankColor(hand, Rank.DRAW_TWO, upCard.getColor()) != -1) {
-                        return findRankColor(hand, Rank.DRAW_TWO, upCard.getColor());
-                    }
+        int p1 = state.getNumCardsInHandsOfUpcomingPlayers()[0];
+        int p2 = state.getNumCardsInHandsOfUpcomingPlayers()[1];
+        int p3 = state.getNumCardsInHandsOfUpcomingPlayers()[2];
+        int self = state.getNumCardsInHandsOfUpcomingPlayers()[3];
+        //if I have less than 3 cards
+        if (upCard.getRank().equals(Rank.WILD) || upCard.getRank().equals(Rank.WILD_D4)) {
+            upCard = new Card(calledColor, upCard.getRank(), -1);
+        }
+        if (self < 3) {
+            //if next person has uno
+            if (p1 == 1) {
+                //engage oh shit mode
+                bail(hand, upCard);
+            }
+            //other wise play anything
+            return bail(hand, upCard);
+        }
+        //if next up has less than 3 cards
+        if (p1 < 3) {
+            //try to give them more cards
+            if (findRank(hand, Rank.WILD_D4) != -1) {
+                return findRank(hand, Rank.WILD_D4);
+            }
+            if (findRankColor(hand, Rank.DRAW_TWO, upCard.getColor()) != -1) {
+                return findRankColor(hand, Rank.DRAW_TWO, upCard.getColor());
+            }
+            //if 2nd up has more than 3, skip next
+            if (p2 > 2) {
+
+                if (findRankColor(hand, Rank.SKIP, upCard.getColor()) != -1) {
+                    return findRankColor(hand, Rank.SKIP, upCard.getColor());
+                }
+            }
+            //if last has more than 3, reverse
+            if (p3 > 2) {
+                if (findRankColor(hand, Rank.REVERSE, upCard.getColor()) != -1) {
+                    return findRankColor(hand, Rank.REVERSE, upCard.getColor());
                 }
             }
         }
-        //if next person has few cards than I
-        if (state.getNumCardsInHandsOfUpcomingPlayers()[0]
-                < state.getNumCardsInHandsOfUpcomingPlayers()[3]) {
-            //if person following them is doing worse
-            if (state.getNumCardsInHandsOfUpcomingPlayers()[1] > 3
-                    || state.getNumCardsInHandsOfUpcomingPlayers()[1]
-                    > state.getNumCardsInHandsOfUpcomingPlayers()[3]) {
-                //skip
-            }
-            //if last person to go is doing worse
-            if (state.getNumCardsInHandsOfUpcomingPlayers()[2] > 3
-                    || state.getNumCardsInHandsOfUpcomingPlayers()[2]
-                    > state.getNumCardsInHandsOfUpcomingPlayers()[3]) {
-                //reverse
-            }
-        }
-        return -1;
+        //if all else fails, play any card
+        return findAny(hand, upCard);
     }
 
     //find card matching rank
@@ -351,6 +340,51 @@ public class jrivera2_UnoPlayer implements UnoPlayer {
                 return i;
             }
         }
+        return -1;
+    }
+
+    //find any
+    public int findAny(ArrayList<Card> hand, Card upCard) {
+        if (findColor(hand, upCard.getColor()) != -1) {
+            return findColor(hand, upCard.getColor());
+        }
+        if (findNum(hand, upCard.getNumber()) != -1
+                && upCard.getRank().equals(Rank.NUMBER)) {
+            return findNum(hand, upCard.getNumber());
+        }
+        if (findRank(hand, upCard.getRank()) != -1) {
+            return findRank(hand, upCard.getRank());
+        }
+        if (findRank(hand, Rank.WILD) != -1) {
+            return findRank(hand, Rank.WILD);
+        }
+        if (findRank(hand, Rank.WILD_D4) != -1) {
+            return findRank(hand, Rank.WILD_D4);
+        }
+        return -1;
+    }
+
+    //Find matching card with highest value
+    //
+    public int bail(ArrayList<Card> hand, Card upCard) {
+        if (findRank(hand, Rank.WILD_D4) != -1) {
+            return findRank(hand, Rank.WILD_D4);
+        }
+        if (findRank(hand, Rank.WILD) != -1) {
+            return findRank(hand, Rank.WILD);
+        }
+        if (findRank(hand, upCard.getRank()) != -1
+                && !upCard.getRank().equals(Rank.NUMBER)) {
+            return findRank(hand, upCard.getRank());
+        }
+        if (findColor(hand, upCard.getColor()) != -1) {
+            return findColor(hand, upCard.getColor());
+        }
+        if (findNum(hand, upCard.getNumber()) != -1
+                && upCard.getRank().equals(Rank.NUMBER)) {
+            return findNum(hand, upCard.getNumber());
+        }
+
         return -1;
     }
 }
